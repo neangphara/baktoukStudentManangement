@@ -1,2 +1,0 @@
-# baktoukStudentManangement
-Student Management System
