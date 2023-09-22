@@ -1,0 +1,67 @@
+ <header class="p-3 mb-2 border-bottom">
+  
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        
+        <ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center">
+          <h1 class=""><%= title %></h1> 
+          
+        </ul>
+
+        
+        <form id="searchForm" method="GET" class="d-flex" role="search">
+          <input id="searchInput" class="form-control" type="search" name="search" placeholder="Search" aria-label="Search">
+          &nbsp;
+          <button class="btn btn-primary" type="submit" ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+          </svg></button>
+        </form>&nbsp;&nbsp;
+
+        <script>
+            const form = document.getElementById('searchForm');
+            const input = document.getElementById('searchInput');
+
+            form.addEventListener('submit', function(event) {
+              if (input.value.trim() === '') {
+                form.action = '/studentList'; // Set action to page 2 if input is empty
+              } else {
+                form.action = '/searchStudent'; // Set action to page 1 if input is not empty
+              }
+            });
+        </script>
+        
+        <div class="dropdown text-end">
+          <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="/user-avatar.png" alt="admin" width="32" height="32" class="rounded-circle">
+          </a>
+          <ul class="dropdown-menu text-small" >
+            
+            <li><a class="dropdown-item" href="#">កំណត់</a></li>
+            <li><a class="dropdown-item" href="/profile">ប្រ៉ូហ្វាល</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#confirmLogout" style="color: red;">ចាកចេញ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <form action="/logout" method="GET">
+      <div class="modal fade" id="confirmLogout" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content rounded-3 shadow">
+            <div class="modal-header">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+              <h4 class="mb-2">តើអ្នកពិតជាចង់ចាកចេញមែនទេ?</h4>
+         
+            </div>
+            <div class="modal-footer text-center">
+                <button style="width: 100%;" class="btn btn-danger btn-lg " type="submit">ចាកចេញ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </header>
