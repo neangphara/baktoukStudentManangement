@@ -5,9 +5,15 @@
     
     <div class="col mt-3">
       <%- include('partials/settings') %>
-      <% if(message.length > 0) { %>
-        <div class="alert alert-success"> <%= message %> </div>
+      <% if(messageSuccess.length > 0) { %>
+        <div class="alert alert-success"> <%= messageSuccess %> </div>
    <% } %>
+   <% if(messageFail.length > 0) { %>
+    <div class="alert alert-danger"> <%= messageFail %> </div>
+<% } %>
+<% if(messageDelete.length > 0) { %>
+  <div class="alert alert-danger"> <%= messageDelete %> </div>
+<% } %>
             <div class="d-flex mb-3">
             <div class="d-flex me-auto">
               <% if(userRole === 'viewer') { %>
@@ -232,7 +238,7 @@
 
     
       <!-- Modal -->
-    <form action="/addStudent" method="POST" class="needs-validation" novalidate="">
+    <form action="/addCurrentStudent" method="POST" class="needs-validation" novalidate="">
       <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -252,6 +258,7 @@
                 </div>
       
                 <div class="col-sm-5">
+                  
                   <label for="studentID" class="form-label">អត្តលេខ</label>
                   <input type="text" class="form-control" name="studentID" placeholder="" value="" required="">
                   <div class="invalid-feedback">
@@ -296,9 +303,9 @@
                 <div class="col-md-5">
                   <label for="skill" class="form-label">ជំនាញ</label>
                   <select class="form-select" name="skill" required="">
-                    <% for (let i = 0; i < skillList.length; i++) { %>
-                      <option value="<%= skillList[i] %>"><%= skillList[i] %></option>
-                    <% } %>
+                     <% departmentlist.forEach(function(departments) { %>
+                      <option value="<%= departments.name %>"><%= departments.name %></option>
+                    <% }); %>
                   </select>
                   <div class="invalid-feedback">
                     សូមជ្រើសរើសជំនាញ
@@ -308,9 +315,9 @@
                 <div class="col-md-4">
                   <label for="course" class="form-label">វគ្គសិក្សា</label>
                   <select class="form-select" name="course" required="">
-                    <% for (let i = 0; i < courseLists.length; i++) { %>
-                      <option value="<%= courseLists[i] %>"><%= courseLists[i] %></option>
-                    <% } %>
+                    <% courseLists.forEach(function(course) { %>
+                      <option value="<%= course.coursename %>"><%= course.coursename %></option>
+                    <% }); %>
                   </select>
                   <div class="invalid-feedback">
                     សូមជ្រើសរើសវគ្គសិក្សា
@@ -336,9 +343,11 @@
                 <div class="col-md-4">
                   <label for="payment" class="form-label">ការទូទាត់</label>
                   <select class="form-select" name="payment" required="">
+                   
                     <% for (let i = 0; i < paymentList.length; i++) { %>
                       <option value="<%= paymentList[i] %>"><%= paymentList[i] %></option>
                     <% } %>
+                   
                   </select>
                   <div class="invalid-feedback">
                     សូមជ្រើសរើសការទូរទាត់
@@ -489,7 +498,7 @@
 
 <% newListStudents.forEach(function(student, index) { %>
   <!-- Modal -->
-<form action="/updateStudent" method="POST" class="needs-validation" novalidate="">
+<form action="/updateCurrentStudent" method="POST" class="needs-validation" novalidate="">
   <div class="modal fade" id="updateModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -556,8 +565,13 @@
             <div class="col-md-5">
               <label for="skill" class="form-label">ជំនាញ</label>
               <select class="form-select" name="skill" required="">
-                <option value="រដ្ឋបាលកុំព្យូទ័រ" <% if (student.skill === 'រដ្ឋបាលកុំព្យូទ័រ') { %>selected<% } %>>រដ្ឋបាលកុំព្យូទ័រ</option>
-                <option value="ក្រាហ្វិកឌីសាញ" <% if (student.skill === 'ក្រាហ្វិកឌីសាញ') { %>selected<% } %>>ក្រាហ្វិកឌីសាញ</option>
+                <% departmentlist.forEach(function(departments) {
+                  if(student.skill === departments.name){ %>
+                    <option value="<%= departments.name %>" selected><%= departments.name %></option>
+                 <% } else { %>
+                    <option value="<%= departments.name %>"><%= departments.name %></option>
+                  <% } %>
+                <% }); %>
               </select>
               <div class="invalid-feedback">
                 សូមជ្រើសរើសជំនាញ
@@ -567,8 +581,13 @@
             <div class="col-md-4">
               <label for="course" class="form-label">វគ្គសិក្សា</label>
               <select class="form-select" name="course" required="">
-                <option value="CAMT" <% if (student.course === 'CAMT') { %>selected<% } %>>CAMT</option>
-                <option value="OAP" <% if (student.course === 'OAP') { %>selected<% } %>>OAP</option>
+                <% courseLists.forEach(function(course) {
+                      if(student.course === course.coursename){ %>
+                        <option value="<%= course.coursename %>" selected><%= course.coursename %></option>
+                     <% } else { %>
+                        <option value="<%= course.coursename %>"><%= course.coursename %></option>
+                      <% } %>
+                    <% }); %>
               </select>
               <div class="invalid-feedback">
                 សូមជ្រើសរើសវគ្គសិក្សា
@@ -584,23 +603,28 @@
             </div>
   
             <div class="col-md-5">
-              <label for="price" class="form-label">តម្លៃសិក្សា</label>
-              <input type="text" class="form-control" name="price" value="<%= student.price %>" placeholder="" required="">
-              <div class="invalid-feedback">
-                សូមបំពេញតម្លៃសិក្សា
-              </div>
-            </div>
+                  <label for="price" class="form-label">តម្លៃសិក្សា</label>
+                  <input type="text" class="form-control" name="price" value="<%= student.price %>" placeholder="" required="">
+                  <div class="invalid-feedback">
+                    សូមបំពេញតម្លៃសិក្សា
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label for="payment" class="form-label">ការទូទាត់</label>
+                  <select class="form-select" name="payment" required="">
+                   
+                    <% for (let i = 0; i < paymentList.length; i++) { %>
+                      <option value="<%= paymentList[i] %>" <% if (student.payment === paymentList[i]) { %>selected<% } %>><%= paymentList[i] %></option>
+                    <% } %>
+                   
+                  </select>
+                  <div class="invalid-feedback">
+                    សូមជ្រើសរើសការទូរទាត់
+                  </div>
+                </div>
             
-            <div class="col-md-4">
-              <label for="payment" class="form-label">ការទូទាត់</label>
-              <select class="form-select" name="payment" required="">
-                <option value="Cash" <% if (student.payment === 'Cash') { %>selected<% } %>>Cash</option>
-                <option value="ABA" <% if (student.payment === 'ABA') { %>selected<% } %>>ABA</option>
-              </select>
-              <div class="invalid-feedback">
-                សូមជ្រើសរើសការទូរទាត់
-              </div>
-            </div>
+            
   
             <div class="col-md-3">
               <label for="occupation" class="form-label">មុខរបរ</label>
@@ -643,7 +667,7 @@
   <% })  %>
 
 <% newListStudents.forEach(function(student, index) { %>
-  <form action="/studentList/<%= student._id %>?_method=DELETE" method="POST">
+  <form action="/currentStudent/<%= student._id %>?_method=DELETE" method="POST">
     <div class="modal fade" id="confirmDeleteModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content rounded-3 shadow">

@@ -6,106 +6,8 @@
     <div class="col mt-3">
       <%- include('partials/settings') %>
 
-      <div class="d-flex mb-3">
-        <div class="d-flex me-auto">
-          <% if(userRole === 'viewer') { %>
-            <button style="display: none;" type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addModal">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
-                <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
-              </svg>
-            </button>
-          <% } else { %>
-            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addModal">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
-                <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
-              </svg>
-            </button>
-          <% } %> 
-          &nbsp;
-          
-          
-
-                      <!-- Button trigger modal -->
-                      <% if(userRole === 'viewer') { %>
-        <button style="display: none;" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadModal">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z"/>
-            <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-          </svg>
-        </button> 
-        <% } else { %>
-          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadModal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-in-down" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M3.5 6a.5.5 0 0 0-.5.5v8a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-8a.5.5 0 0 0-.5-.5h-2a.5.5 0 0 1 0-1h2A1.5 1.5 0 0 1 14 6.5v8a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-8A1.5 1.5 0 0 1 3.5 5h2a.5.5 0 0 1 0 1h-2z"/>
-              <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
-            </svg>
-          </button> 
-          <% } %> 
-
-        <!-- Modal -->
-         <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">បញ្ចូលទិន្នន័យពី Excel</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              
-                <form action="/upload" method="post" enctype="multipart/form-data">
-                  <div class="modal-body">
-                    <label for="fileInput" class="drop-container" id="dropcontainer">
-                      <span id="drop-title" class="drop-title">ជ្រើសរើសឯកសារ</span>
-                     
-                      <input type="file" id="fileInput" name="excelFile" accept=".xlsx, .xls" style="display:none;" required>
-                    </label>
-                    
-                  </div>
-                  <div class="modal-footer">
-                    <button class="btn btn-success" type="submit">ផ្ទុក</button>
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ចាកចេញ</button>
-                    
-                  </div>
-              </form>
-               
-             </div>
-          </div>
-        </div>  
-        
-        <script>
-          const dropContainer = document.getElementById("dropcontainer");
-        const fileInput = document.getElementById("fileInput");
-        const selectedFileName = document.getElementById("drop-title");
-
-        dropContainer.addEventListener("dragover", (e) => {
-          // prevent default to allow drop
-          e.preventDefault()
-        }, false)
-
-        dropContainer.addEventListener("dragenter", () => {
-          dropContainer.classList.add("drag-active")
-        })
-
-        dropContainer.addEventListener("dragleave", () => {
-          dropContainer.classList.remove("drag-active")
-        })
-
-        dropContainer.addEventListener("drop", (e) => {
-          e.preventDefault()
-          dropContainer.classList.remove("drag-active")
-          fileInput.files = e.dataTransfer.files
-          const fileName = fileInput.files[0].name
-          selectedFileName.textContent = fileName
-        })
-        fileInput.addEventListener("change", function() {
-            const fileName = fileInput.files[0].name;
-            selectedFileName.textContent = fileName;
-          });
-        </script>
-
-        
-            
+      <div class="d-flex">
+        <div class="d-flex">
         </div>
         <div class="" >
           <p style="font-size: 20px;">ចំនួនសិក្ខាកាម <%= countStudent %> នាក់</p>
@@ -333,86 +235,105 @@
 
 
 <% newListStudents.forEach(function(student, index) { %>
-<!-- Modal -->
-<div class="modal fade" id="exampleModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-  <div class="modal-header">
-    <h1 class="modal-title fs-4" id="exampleModalLabel">ព័ត៌មានរបស់សិក្ខាកាម</h1>
-    <% var id = '';
-    if(student.studentID){
-      id = 'អត្តលេខ: ' + student.studentID;
-    } else {
-      id = 'អត្តលេខ: គ្មាន';
-    }
-     %>
-    <h1 class="modal-title fs-4"><%= id %></h1>
-  </div>
-  <div class="modal-body">
-    <div class="d-flex gap-2">
-      <table class="table table-bordered">
-        <tbody>
-          
-          <tr>
-            <th scope="row">ឈ្មោះ</th>
-            <td><%= student.khmername %></td>
-          </tr>
-          <tr>
-            <th scope="row">ជាអក្សរឡាតាំង</th>
-            <td><%= student.englishname %></td>
-          </tr>
-          <tr>
-            <th scope="row">ភេទ</th>
-            <td><%= student.gender %></td>
-          </tr>
-          <tr>
-            <th scope="row">ថ្ងៃខែឆ្នាំកំណើត</th>
-            <td><%= moment(student.dateofbirth).format('DD-MMM-YYYY') %></td>
-          </tr>
-          <tr>
-            <th scope="row">លេខទូរសព័្ទ</th>
-            <td><%= student.phone %></td>
-          </tr>
-        </tbody>
-      </table>
-      <table class="table table-bordered">
-        <tbody>
-          <tr>
-            <th scope="row">ជំនាញ</th>
-            <td><%= student.skill %></td>
-          </tr>
-          <tr>
-            <th scope="row">វគ្គសិក្សា</th>
-            <td><%= student.course %></td>
-          </tr>
-          <tr>
-            <th scope="row">ថ្ងៃចុះឈ្មោះ</th>
-            <td><%= moment(student.dateregister).format('DD-MMM-YYYY') %></td>
-          </tr>
-          <tr>
-            <th scope="row">មុខរបរ</th>
-            <td><%= student.occupation %></td>
-          </tr>
-          <tr>
-            <th scope="row">ស្ថានភាព</th>
-            <td><%= student.status %></td>
-          </tr>
-        </tbody>
-      </table>
+
+  <div class="modal fade" id="exampleModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-4" id="exampleModalLabel">ព័ត៌មានរបស់សិក្ខាកាម</h1><br>
+        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <% var id = '';
+        if(student.studentID){
+          id = 'អត្តលេខ: ' + student.studentID;
+        } else {
+          id = 'អត្តលេខ: គ្មាន';
+        }
+         %>
+        <h2 class="modal-title fs-4"><%= id %></h2><br>
+        <div class="d-flex gap-2">
+          <table class="table studentDetail">
+            <tbody>
+              
+              <tr>
+                <th scope="row" >ឈ្មោះ</th>
+                <td><%= student.khmername %></td>
+              </tr>
+              <tr>
+                <th scope="row" >ជាអក្សរឡាតាំង</th>
+                <td><%= student.englishname %></td>
+              </tr>
+              <tr>
+                <th scope="row" >ភេទ</th>
+                <td><%= student.gender %></td>
+              </tr>
+              <tr>
+                <th scope="row" >ថ្ងៃខែឆ្នាំកំណើត</th>
+                <td><%= moment(student.dateofbirth).format('DD-MMM-YYYY') %></td>
+              </tr>
+              <tr>
+                <th scope="row" >លេខទូរសព័្ទ</th>
+                <td><%= student.phone %></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table studentDetail">
+            <tbody>
+              <tr>
+                <th>ជំនាញ</th>
+                <td><%= student.skill %></td>
+              </tr>
+              <tr>
+                <th>វគ្គសិក្សា</th>
+                <td><%= student.course %></td>
+              </tr>
+              <tr>
+                <th>ថ្ងៃចុះឈ្មោះ</th>
+                <td><%= moment(student.dateregister).format('DD-MMM-YYYY') %></td>
+              </tr>
+              <tr>
+                <th>មុខរបរ</th>
+                <td><%= student.occupation %></td>
+              </tr>
+              <tr>
+                <th>ស្ថានភាព</th>
+                <td>
+                  <% if(student.status === 'កំពុងសិក្សា') { %>
+                    <div class="active-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="8"/>
+                  </svg>&nbsp;<%= student.status %></div>
+                  <% } else if(student.status === 'បញ្ចប់ការសិក្សា') { %>
+                    <div class="exam-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                      <circle cx="8" cy="8" r="8"/>
+                    </svg>&nbsp;បញ្ចប់</div>
+                    <% } else if(student.status === 'បោះបង់ការសិក្សា') { %>
+                      <div class="dropout-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8"/>
+                      </svg>&nbsp;បោះបង់</div>
+                    <% } else { %>
+                      <div class="other-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8"/>
+                      </svg>&nbsp;<%= student.status %></div>
+                    <% } %>
+              </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+       
+        
+      </div>
+      <div class="modal-footer">
+        <% if(userRole === 'viewer') { %>
+          <button style="display: none;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
+          <% } else { %>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
+          <% } %>
+      </div>
     </div>
-   
-    
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ចាកចេញ</button>
-    <% if(userRole === 'viewer') { %>
-      <button style="display: none;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
-      <% } else { %>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
-      <% } %>
-  </div>
-</div>
-</div>
 </div>
 <% })  %>
 

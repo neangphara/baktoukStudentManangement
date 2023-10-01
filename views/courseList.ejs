@@ -4,11 +4,17 @@
 
 <div class="col mt-3">
   <%- include('partials/settings') %>
-    
+  <% if(messageSuccess.length > 0) { %>
+    <div class="alert alert-success"> <%= messageSuccess %> </div>
+<% } %>
+<% if(messageFail.length > 0) { %>
+<div class="alert alert-danger"> <%= messageFail %> </div>
+<% } %>
+<% if(messageDelete.length > 0) { %>
+<div class="alert alert-danger"> <%= messageDelete %> </div>
+<% } %>
   <div class="">
-    <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addDepartment">
-      បន្ថែមជំនាញ
-     </button> 
+    
     <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#addModal">
      បន្ថែមវគ្គសិក្សា
     </button> 
@@ -17,7 +23,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <!-- <th scope="col">#</th> -->
             <th scope="col">ជំនាញ</th>
             <th scope="col">វគ្គសិក្សា</th>
             <th scope="col">តម្លៃ</th>
@@ -30,7 +36,7 @@
             var price = course.price;
                   var formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);%>
             <tr>
-              <th> <%= index + 1 %> </th>
+              
               <td> <%= course.department %> </td>
               <td> <%= course.coursename %></td>
               <td> <%= formattedPrice %></td>
@@ -57,6 +63,26 @@
           
         </tbody>
       </table>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          
+            <li class="page-item"><a class="page-link" href="?page=<%= 1 %>">ដំបូង</a></li>
+            <% if(currentPage > 1) { %>
+              <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+              </svg></a></li>
+            <% } %>
+            <li class="page-item"><a class="page-link" href=""><%= currentPage %></a></li>
+            <%  let currentPagenum = parseInt(currentPage);%>
+            <% if(currentPagenum < totalPage) { %>
+            <li class="page-item"><a class="page-link" href="?page=<%= currentPagenum + 1%>"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+              <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+            </svg></a></li>
+            <% }%>
+            <li class="page-item"><a class="page-link" href="?page=<%= totalPage %>">ចុងក្រោយ</a></li>
+          
+        </ul>
+      </nav>
     </div>
 </div>
 
@@ -91,8 +117,8 @@
                 <div class="col-sm-7">
                   <label for="englishname" class="form-label">ជំនាញ</label>
                   <select class="form-control" name="department" id="">
-                    <% department.forEach(function(departments) { %>
-                      <option value="<%= departments.department %>"><%= departments.department %></option>
+                    <% departmentlist.forEach(function(departments) { %>
+                      <option value="<%= departments.name %>"><%= departments.name %></option>
                     <% }); %>
                     </select>
                 </div>
@@ -116,36 +142,8 @@
       </div>
     </form>
 
-    <form action="/addDepartment" method="POST" class="needs-validation" novalidate="">
-      <div class="modal fade" id="addDepartment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-4" id="exampleModalLabel">បញ្ចូលវគ្គសិក្សាថ្មី</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <div class="row g-3">
-                <div class="col-sm-12">
-                  <label for="englishname" class="form-label">ជំនាញ</label>
-                  <input type="text" class="form-control" name="department" placeholder="" value="" required="">
-                  <div class="invalid-feedback">
-                    សូមបំពេញឈ្មោះ
-                  </div>
-                </div>
-                
-      
-                
-              </div>
-            </div>
-            <div class="modal-footer">
-             
-              <button type="submit" class="btn btn-primary">រក្សាទុក</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
+    
+
 
     <% newListCourses.forEach(function(course, index) { %>
     <form action="/updateCourse" method="POST" class="needs-validation" novalidate="">
@@ -158,7 +156,7 @@
             </div>
             <div class="modal-body">
               <div class="row g-3">
-               
+               <input style="display: none;" type="text" name="courseID" value="<%= course._id %>">
                 <div class="col-sm-7">
                   <label for="khmername" class="form-label">ឈ្មោះវគ្គសិក្សា</label>
                   <input type="text" class="form-control" name="coursename" placeholder="" value="<%= course.coursename %>" required>
@@ -178,11 +176,11 @@
                 <div class="col-sm-7">
                   <label for="englishname" class="form-label">ជំនាញ</label>
                   <select class="form-control" name="department" id="">
-                    <% department.forEach(function(departments) {
-                      if(course.department === departments.department){ %>
-                        <option value="<%= departments.department %>" selected><%= departments.department %></option>
+                    <% departmentlist.forEach(function(departments) {
+                      if(course.department === departments.name){ %>
+                        <option value="<%= departments.name %>" selected><%= departments.name %></option>
                      <% } else { %>
-                        <option value="<%= departments.department %>"><%= departments.department %></option>
+                        <option value="<%= departments.name %>"><%= departments.name %></option>
                       <% } %>
                     <% }); %>
                     </select>
@@ -207,6 +205,29 @@
       </div>
     </form>
     <% })  %>
+
+
+    <% newListCourses.forEach(function(course, index) { %>
+  <form action="/courseList/<%= course._id %>?_method=DELETE" method="POST">
+    <div class="modal fade" id="confirmDeleteModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content rounded-3 shadow">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4 text-center">
+            <h4 class="mb-2">តើអ្នកពិតជាចង់លុបទិន្នន័យនេះមែនទេ?</h4>
+            <p class="mb-0">ទិន្នន័យដែលបានលុបរួចមិនអាចត្រឡប់វិញបានទេ។</p>
+          </div>
+          <div class="modal-footer text-center">
+              <button style="width: 100%;" class="btn btn-danger btn-lg " type="submit">លុប</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+<% })  %>
 
 <script>
   function formatDollarAmount(amount) {

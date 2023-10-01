@@ -85,7 +85,7 @@ const studentSchema = new mongoose.Schema ({
 });
 
 const departmentSchema = new mongoose.Schema ({
-  department: String
+  name: String
 });
 
 const courseSchema = new mongoose.Schema ({
@@ -109,7 +109,7 @@ userSchema.plugin(findOrCreate);
 const User = new mongoose.model("User", userSchema);
 const Student = new mongoose.model("Student", studentSchema);
 const Course = new mongoose.model("Course", courseSchema);
-const Department = new mongoose.model("Department", departmentSchema);
+const DepartmentList = new mongoose.model("Department", departmentSchema);
 
 
 app.locals.moment = require('moment');
@@ -289,7 +289,8 @@ app.get("/searchStudent", async(req, res) => {
         $or: [
           { khmername: searchPattern },
           { englishname: searchPattern },
-          { course: searchPattern }
+          { course: searchPattern },
+          { status: searchPattern }
         ]
       };
       
@@ -304,7 +305,9 @@ app.get("/searchStudent", async(req, res) => {
       .skip((page - 1) * limit)
       .exec();
 
-      const count = await Student.find().countDocuments();
+      const count = await Student.find(query).countDocuments();
+      const findCourse = await Course.find();
+      const department = await DepartmentList.find();
       const pageTitle = "បញ្ជីសិក្ខាកាម";
       
       res.render('searchStudent', {
@@ -316,12 +319,15 @@ app.get("/searchStudent", async(req, res) => {
         title: pageTitle,
         genderList: genderlist, 
         skillList: skillList, 
-        courseLists: courseLists, 
+        courseLists: findCourse, 
+        departmentlist: department,
         paymentList: paymentList, 
         jobList: jobList, 
         statusList: statusList,
         userRole: userRole,
-        message: req.flash('message')
+        messageSuccess: req.flash('message-success'),
+        messageFail: req.flash('message-fail'),
+        messageDelete: req.flash('message-delete')
         
       });
 
@@ -348,7 +354,7 @@ app.get("/studentList", async(req, res) => {
       if(req.query.page){
         page = req.query.page;
       }
-      const limit = 8;
+      const limit = 6;
       
       const searchPattern = isNaN(search) ? {$regex: '.*'+search+'.*', $options: 'i'} : search;
       const query = {
@@ -371,6 +377,10 @@ app.get("/studentList", async(req, res) => {
       .exec();
 
       const count = await Student.find().countDocuments();
+      const findCourse = await Course.find();
+      const department = await DepartmentList.find();
+      
+      
       const pageTitle = "បញ្ជីសិក្ខាកាម";
       const userRole = req.session.user.role;
       res.render('studentList', {
@@ -382,12 +392,16 @@ app.get("/studentList", async(req, res) => {
         title: pageTitle,
         genderList: genderlist, 
         skillList: skillList, 
-        courseLists: courseLists, 
+        courseLists: findCourse, 
+        departmentlist: department,
         paymentList: paymentList, 
         jobList: jobList, 
         statusList: statusList,
         userRole: userRole,
-        message: req.flash('message')
+        messageSuccess: req.flash('message-success'),
+        messageFail: req.flash('message-fail'),
+        messageDelete: req.flash('message-delete')
+        
         
       });
 
@@ -412,7 +426,7 @@ app.get("/currentStudent", async(req, res) =>{
     if(req.query.page){
       page = req.query.page;
     }
-    const limit = 8;
+    const limit = 6;
     
 
     const foundStudents = await Student.find({
@@ -427,6 +441,8 @@ app.get("/currentStudent", async(req, res) =>{
         status: 'កំពុងសិក្សា'
       
     }).countDocuments();
+    const findCourse = await Course.find();
+    const department = await DepartmentList.find();
     const pageTitle = "បញ្ជីសិក្ខាកាមកំពុងទទួលការបណ្តុះបណ្តាល";
     const userRole = req.session.user.role;
     res.render('currentStudent', {
@@ -438,12 +454,15 @@ app.get("/currentStudent", async(req, res) =>{
       title: pageTitle,
       genderList: genderlist, 
       skillList: skillList, 
-      courseLists: courseLists, 
+      courseLists: findCourse, 
+      departmentlist: department,
       paymentList: paymentList, 
       jobList: jobList, 
       statusList: statusList,
       userRole: userRole,
-      message: req.flash('message')
+      messageSuccess: req.flash('message-success'),
+      messageFail: req.flash('message-fail'),
+      messageDelete: req.flash('message-delete')
     });
 
   } catch (error) {
@@ -468,7 +487,7 @@ app.get("/examList", async (req, res) =>{
     if(req.query.page){
       page = req.query.page;
     }
-    const limit = 8;
+    const limit = 6;
     
 
     const foundStudents = await Student.find(
@@ -489,6 +508,8 @@ app.get("/examList", async (req, res) =>{
         {status: 'បញ្ចប់ការសិក្សា'}
       ]
     }).countDocuments();
+    const findCourse = await Course.find();
+    const department = await DepartmentList.find();
     const pageTitle = "បញ្ជីសិក្ខាកាមបានបញ្ចប់ការបណ្តុះបណ្តាល";
     const userRole = req.session.user.role;
     res.render('examList', {
@@ -500,12 +521,15 @@ app.get("/examList", async (req, res) =>{
       title: pageTitle,
       genderList: genderlist, 
       skillList: skillList, 
-      courseLists: courseLists, 
+      courseLists: findCourse, 
+      departmentlist: department,
       paymentList: paymentList, 
       jobList: jobList, 
       statusList: statusList,
       userRole: userRole,
-      message: req.flash('message')
+      messageSuccess: req.flash('message-success'),
+      messageFail: req.flash('message-fail'),
+      messageDelete: req.flash('message-delete')
     });
 
   } catch (error) {
@@ -530,7 +554,7 @@ app.get("/dropout", async (req, res) =>{
       if(req.query.page){
         page = req.query.page;
       }
-      const limit = 8;
+      const limit = 6;
       
 
       const foundStudents = await Student.find({
@@ -551,6 +575,8 @@ app.get("/dropout", async (req, res) =>{
           {status: 'បោះបង់ការសិក្សា'}
         ]
       }).countDocuments();
+      const findCourse = await Course.find();
+      const department = await DepartmentList.find();
       const pageTitle = "បញ្ជីសិក្ខាកាមបានបោះបង់ការសិក្សា";
       const userRole = req.session.user.role;
       res.render('dropout', {
@@ -562,12 +588,15 @@ app.get("/dropout", async (req, res) =>{
         title: pageTitle,
         genderList: genderlist, 
         skillList: skillList, 
-        courseLists: courseLists, 
+        courseLists: findCourse, 
+        departmentlist: department,
         paymentList: paymentList, 
         jobList: jobList, 
         statusList: statusList,
         userRole: userRole,
-        message: req.flash('message')
+        messageSuccess: req.flash('message-success'),
+        messageFail: req.flash('message-fail'),
+        messageDelete: req.flash('message-delete')
       });
 
     } catch (error) {
@@ -582,29 +611,78 @@ app.get("/courseList", async(req, res)=>{
  // Check if user is logged in
  if (!req.session.user) {
   res.redirect("/login");
-} else {
-  const pageTitle = "វគ្គបណ្តុះបណ្តាល";
-    const userRole = req.session.user.role;
-    const department = await Department.find();
-    const course = await Course.find();
-    res.render('courseList', {
-      department: department,
-      newListCourses: course,
-      title: pageTitle,
-      userRole: userRole
-    });
-}
+  } else {
+    var page = 1;
+      if(req.query.page){
+        page = req.query.page;
+      }
+      const limit = 6;
+      const pageTitle = "វគ្គបណ្តុះបណ្តាល";
+      const userRole = req.session.user.role;
+      const department = await DepartmentList.find();
+      const course = await Course.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+      const count = await Course.find().countDocuments();
+      res.render('courseList', {
+        departmentlist: department,
+        newListCourses: course,
+        title: pageTitle,
+        userRole: userRole,
+        totalPage: Math.ceil(count/limit),
+        currentPage: page,
+        messageSuccess: req.flash('message-success'),
+        messageFail: req.flash('message-fail'),
+        messageDelete: req.flash('message-delete')
+      });
+  }
+});
+
+app.get('/department', async(req,res) =>{
+    // Check if user is logged in
+ if (!req.session.user) {
+  res.redirect("/login");
+  } else {
+    var page = 1;
+      if(req.query.page){
+        page = req.query.page;
+      }
+      const limit = 6;
+      const pageTitle = "ជំនាញ";
+      const userRole = req.session.user.role;
+      const department = await DepartmentList.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+
+      const count = await DepartmentList.find().countDocuments();
+      
+      res.render('department', {
+        departmentlist: department,
+        title: pageTitle,
+        userRole: userRole,
+        totalPage: Math.ceil(count/limit),
+        currentPage: page,
+        messageSuccess: req.flash('message-success'),
+        messageFail: req.flash('message-fail'),
+        messageDelete: req.flash('message-delete')
+      });
+  }
+
 
 app.post("/addDepartment", function(req, res){
-  const department = new Department({
-    department: req.body.department
+  const department = new DepartmentList({
+    name: req.body.department
   });
   department.save((err) => {
     if(err) {
       console.log(err);
+      req.flash('message-danger', 'រក្សាទុកមិនបានជោគជ័យ');
     } else {
       console.log("Data added successfully");
-      res.redirect("/courseList");
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+      res.redirect("/department");
     }
   });
 });
@@ -620,8 +698,10 @@ app.post("/addCourse", function(req, res){
   course.save((err) => {
     if(err) {
       console.log(err);
+      req.flash('message-danger', 'រក្សាទុកមិនបានជោគជ័យ');
     } else {
       console.log("Data added successfully");
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
       res.redirect("/courseList");
     }
   });
@@ -648,7 +728,9 @@ app.get("/userList", async(req, res) => {
       const users = await User.find();
       const currentUser = await User.findById(userId);
   
-      res.render('userList', { users, title, currentUser, userRole });
+      res.render('userList', { users, title, currentUser, userRole, messageSuccess: req.flash('message-success'),
+      messageFail: req.flash('message-fail'),
+      messageDelete: req.flash('message-delete') });
     } catch (error) {
       res.status(500).json({ error: 'Failed to retrieve user list' });
     }
@@ -663,12 +745,18 @@ app.post("/updateUsers", async(req, res) => {
     res.redirect("/login");
   } else {
     const userId = req.body.objectID;
+    const newUsername = req.body.username;
     const updatedData = {
       username: req.body.username,
       role: req.body.role
       
     };
 
+    // Check if the new username is already taken
+    const existingUser = await User.findOne({ username: newUsername });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Username already taken' });
+    }
   // Use Mongoose to update the student in the database
   User.findByIdAndUpdate(userId, updatedData)
     .then(() => {
@@ -796,27 +884,149 @@ app.post("/addStudent", function(req, res){
     skill: req.body.skill,
     course: req.body.course,
     dateregister: req.body.dateregister,
-    // price: req.body.price,
-    // payment: req.body.payment,
+    price: req.body.price,
+    payment: req.body.payment,
     occupation: req.body.occupation,
     status: req.body.status
   });
+  const studentID = req.body.studentID;
+  // Check if the new studentID is already taken
+  const existingID = Student.findOne({ studentID: studentID });
+  if (existingID) {
+    return res.status(400).json({ error: 'អត្តលេខ ' + studentID + ' មានរួចហើយមិនអាចបញ្ចូលបានទេ' });
+  }
 
   student.save((err) => {
     if(err) {
       console.log(err);
         
-        req.flash('message', 'រក្សាទុកមិនបានជោគជ័យ');
+        req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
         res.redirect("/studentList");
                 
     } else {
-        req.flash('message', 'រក្សាទុកបានជោគជ័យ');
+        req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
         res.redirect("/studentList");
                
     }
   });
 });
 
+app.post("/addCurrentStudent", function(req, res){
+  const student = new Student({
+    studentID: req.body.studentID,
+    khmername: req.body.khmername,
+    englishname: req.body.englishname,
+    phone: req.body.phone,
+    gender: req.body.gender,
+    dateofbirth: req.body.dateofbirth,
+    skill: req.body.skill,
+    course: req.body.course,
+    dateregister: req.body.dateregister,
+    price: req.body.price,
+    payment: req.body.payment,
+    occupation: req.body.occupation,
+    status: req.body.status
+  });
+
+  const studentID = req.body.studentID;
+  // Check if the new studentID is already taken
+  const existingID = Student.findOne({ studentID: studentID });
+  if (existingID) {
+    return res.status(400).json({ error: 'អត្តលេខ ' + studentID + ' មានរួចហើយមិនអាចបញ្ចូលបានទេ' });
+  }
+
+  student.save((err) => {
+    if(err) {
+      console.log(err);
+        
+        req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+        res.redirect("/currentStudent");
+                
+    } else {
+        req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+        res.redirect("/currentStudent");
+               
+    }
+  });
+});
+
+app.post("/addExamList", function(req, res){
+  const student = new Student({
+    studentID: req.body.studentID,
+    khmername: req.body.khmername,
+    englishname: req.body.englishname,
+    phone: req.body.phone,
+    gender: req.body.gender,
+    dateofbirth: req.body.dateofbirth,
+    skill: req.body.skill,
+    course: req.body.course,
+    dateregister: req.body.dateregister,
+    price: req.body.price,
+    payment: req.body.payment,
+    occupation: req.body.occupation,
+    status: req.body.status
+  });
+
+  const studentID = req.body.studentID;
+  // Check if the new studentID is already taken
+  const existingID = Student.findOne({ studentID: studentID });
+  if (existingID) {
+    return res.status(400).json({ error: 'អត្តលេខ ' + studentID + ' មានរួចហើយមិនអាចបញ្ចូលបានទេ' });
+  }
+
+  student.save((err) => {
+    if(err) {
+      console.log(err);
+        
+        req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+        res.redirect("/examList");
+                
+    } else {
+        req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+        res.redirect("/examList");
+               
+    }
+  });
+});
+
+app.post("/addDropout", function(req, res){
+  const student = new Student({
+    studentID: req.body.studentID,
+    khmername: req.body.khmername,
+    englishname: req.body.englishname,
+    phone: req.body.phone,
+    gender: req.body.gender,
+    dateofbirth: req.body.dateofbirth,
+    skill: req.body.skill,
+    course: req.body.course,
+    dateregister: req.body.dateregister,
+    price: req.body.price,
+    payment: req.body.payment,
+    occupation: req.body.occupation,
+    status: req.body.status
+  });
+
+  const studentID = req.body.studentID;
+  // Check if the new studentID is already taken
+  const existingID = Student.findOne({ studentID: studentID });
+  if (existingID) {
+    return res.status(400).json({ error: 'អត្តលេខ ' + studentID + ' មានរួចហើយមិនអាចបញ្ចូលបានទេ' });
+  }
+
+  student.save((err) => {
+    if(err) {
+      console.log(err);
+        
+        req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+        res.redirect("/dropout");
+                
+    } else {
+        req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+        res.redirect("/dropout");
+               
+    }
+  });
+});
 
 
 // DELETE route handler
@@ -827,11 +1037,67 @@ app.delete('/studentList/:id', (req, res) => {
   Student.findByIdAndDelete(studentId)
     .then(() => {
       console.log('Student deleted successfully');
+      req.flash('message-delete', 'ទិន្នន័យត្រូវបានលុប');
       res.redirect('/studentList');
     })
     .catch((error) => {
       console.error('Error deleting student:', error);
+      req.flash('message-delete', 'ទិន្នន័យមិនអាចលុបបានទេ');
       res.redirect('/studentList'); // Redirect to the student list page
+    });
+});
+
+// DELETE route handler
+app.delete('/currentStudent/:id', (req, res) => {
+  const studentId = req.params.id;
+
+  // Use Mongoose to delete the student from the database
+  Student.findByIdAndDelete(studentId)
+    .then(() => {
+      console.log('Student deleted successfully');
+      req.flash('message-delete', 'ទិន្នន័យត្រូវបានលុប');
+      res.redirect('/currentStudent');
+    })
+    .catch((error) => {
+      console.error('Error deleting student:', error);
+      req.flash('message-delete', 'ទិន្នន័យមិនអាចលុបបានទេ');
+      res.redirect('/currentStudent'); // Redirect to the student list page
+    });
+});
+
+// DELETE route handler
+app.delete('/examList/:id', (req, res) => {
+  const studentId = req.params.id;
+
+  // Use Mongoose to delete the student from the database
+  Student.findByIdAndDelete(studentId)
+    .then(() => {
+      console.log('Student deleted successfully');
+      req.flash('message-delete', 'ទិន្នន័យត្រូវបានលុប');
+      res.redirect('/examList');
+    })
+    .catch((error) => {
+      console.error('Error deleting student:', error);
+      req.flash('message-delete', 'ទិន្នន័យមិនអាចលុបបានទេ');
+      res.redirect('/examList'); // Redirect to the student list page
+    });
+});
+
+// DELETE route handler
+app.delete('/dropout/:id', (req, res) => {
+  const studentId = req.params.id;
+
+  // Use Mongoose to delete the student from the database
+  Student.findByIdAndDelete(studentId)
+    .then(() => {
+      console.log('Student deleted successfully');
+      req.flash('message-delete', 'ទិន្នន័យត្រូវបានលុប');
+      res.redirect('/dropout');
+    })
+    .catch((error) => {
+      console.error('Error deleting student:', error);
+      req.flash('message-delete', 'ទិន្នន័យមិនអាចលុបបានទេ');
+      res.redirect('/dropout'); // Redirect to the student list page
     });
 });
 
@@ -859,35 +1125,133 @@ app.post('/updateStudent', (req, res) => {
   Student.findByIdAndUpdate(studentId, updatedData)
     .then(() => {
       console.log('Student updated successfully');
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
       res.redirect('/studentList'); // Redirect to the student list page
     })
     .catch((error) => {
       console.error('Error updating student:', error);
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
       res.redirect('/studentList'); // Redirect to the student list page
     });
 });
 
-app.get('/updateCourse/:id/edit', (req, res) => {
-  const courseId = req.params.id;
+app.post('/updateCurrentStudent', (req, res) => {
+  const studentId = req.body.objectID;
+  const updatedData = {
+    studentID: req.body.studentID,
+    khmername: req.body.khmername,
+    englishname: req.body.englishname,
+    gender: req.body.gender,
+    dateofbirth: req.body.dateofbirth,
+    skill: req.body.skill,
+    course: req.body.course,
+    dateregister: req.body.dateregister,
+    price: req.body.price,
+    payment: req.body.payment,
+    occupation: req.body.occupation,
+    status: req.body.status,
+    phone: req.body.phone
+  };
 
-  // Use Mongoose to find the course from the database
-  Course.findById(courseId)
-    .then((course) => {
-      
-      res.render('updateCourse', { course }); 
-      
+  // Use Mongoose to update the student in the database
+  Student.findByIdAndUpdate(studentId, updatedData)
+    .then(() => {
+      console.log('Student updated successfully');
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+      res.redirect('/currentStudent'); // Redirect to the student list page
     })
     .catch((error) => {
-      console.error('Error retrieving course:', error);
-      res.redirect('/courseList'); 
+      console.error('Error updating student:', error);
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+      res.redirect('/currentStudent'); // Redirect to the student list page
     });
-
-    
 });
 
+app.post('/updateExamList', (req, res) => {
+  const studentId = req.body.objectID;
+  const updatedData = {
+    studentID: req.body.studentID,
+    khmername: req.body.khmername,
+    englishname: req.body.englishname,
+    gender: req.body.gender,
+    dateofbirth: req.body.dateofbirth,
+    skill: req.body.skill,
+    course: req.body.course,
+    dateregister: req.body.dateregister,
+    price: req.body.price,
+    payment: req.body.payment,
+    occupation: req.body.occupation,
+    status: req.body.status,
+    phone: req.body.phone
+  };
 
-app.post('/updateCourse/:id/edit', (req, res) => {
-  const courseId = req.params.id;
+  // Use Mongoose to update the student in the database
+  Student.findByIdAndUpdate(studentId, updatedData)
+    .then(() => {
+      console.log('Student updated successfully');
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+      res.redirect('/examList'); // Redirect to the student list page
+    })
+    .catch((error) => {
+      console.error('Error updating student:', error);
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+      res.redirect('/examList'); // Redirect to the student list page
+    });
+});
+
+app.post('/updateDropout', (req, res) => {
+  const studentId = req.body.objectID;
+  const updatedData = {
+    studentID: req.body.studentID,
+    khmername: req.body.khmername,
+    englishname: req.body.englishname,
+    gender: req.body.gender,
+    dateofbirth: req.body.dateofbirth,
+    skill: req.body.skill,
+    course: req.body.course,
+    dateregister: req.body.dateregister,
+    price: req.body.price,
+    payment: req.body.payment,
+    occupation: req.body.occupation,
+    status: req.body.status,
+    phone: req.body.phone
+  };
+
+  // Use Mongoose to update the student in the database
+  Student.findByIdAndUpdate(studentId, updatedData)
+    .then(() => {
+      console.log('Student updated successfully');
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+      res.redirect('/dropout'); // Redirect to the student list page
+    })
+    .catch((error) => {
+      console.error('Error updating student:', error);
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+      res.redirect('/dropout'); // Redirect to the student list page
+    });
+});
+
+// app.get('/updateCourse/:id/edit', (req, res) => {
+//   const courseId = req.params.id;
+
+//   // Use Mongoose to find the course from the database
+//   Course.findById(courseId)
+//     .then((course) => {
+      
+//       res.render('updateCourse', { course }); 
+      
+//     })
+//     .catch((error) => {
+//       console.error('Error retrieving course:', error);
+//       res.redirect('/courseList'); 
+//     });
+
+    
+// });
+
+
+app.post('/updateCourse', (req, res) => {
+  const courseId = req.body.courseID;
   const updatedData = {
     department: req.body.department,
     coursename: req.body.coursename,
@@ -898,11 +1262,69 @@ app.post('/updateCourse/:id/edit', (req, res) => {
   Course.findByIdAndUpdate(courseId, updatedData)
     .then(() => {
       console.log('Course updated successfully');
-      res.redirect('/coursetList'); // Redirect to the student list page
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+      res.redirect('/courseList'); // Redirect to the student list page
     })
     .catch((error) => {
       console.error('Error updating student:', error);
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
       res.redirect('/courseList'); // Redirect to the student list page
+    });
+});
+
+app.post('/updateDepartment', (req, res) => {
+  const departmentId = req.body.departmentID;
+  const updatedData = {
+    department: req.body.department
+  };
+
+  // Use Mongoose to update the student in the database
+  DepartmentList.findByIdAndUpdate(departmentId, updatedData)
+    .then(() => {
+      console.log('Department updated successfully');
+      req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+      res.redirect('/department'); // Redirect to the student list page
+    })
+    .catch((error) => {
+      console.error('Error updating department:', error);
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+      res.redirect('/department'); // Redirect to the student list page
+    });
+});
+
+// DELETE route handler
+app.delete('/courseList/:id', (req, res) => {
+  const courseId = req.params.id;
+
+  // Use Mongoose to delete the student from the database
+  Course.findByIdAndDelete(courseId)
+    .then(() => {
+      console.log('Course deleted successfully');
+      req.flash('message-delete', 'ទិន្នន័យត្រូវបានលុប');
+      res.redirect('/courseList');
+    })
+    .catch((error) => {
+      console.error('Error deleting course:', error);
+      req.flash('message-delete', 'ទិន្នន័យមិនអាចលុបបានទេ');
+      res.redirect('/courseList'); // Redirect to the student list page
+    });
+});
+
+// DELETE route handler
+app.delete('/department/:id', (req, res) => {
+  const departmentId = req.params.id;
+
+  // Use Mongoose to delete the student from the database
+  DepartmentList.findByIdAndDelete(departmentId)
+    .then(() => {
+      console.log('Department deleted successfully');
+      req.flash('message-delete', 'ទិន្នន័យត្រូវបានលុប');
+      res.redirect('/department');
+    })
+    .catch((error) => {
+      console.error('Error deleting department:', error);
+      req.flash('message-delete', 'ទិន្នន័យមិនអាចលុបបានទេ');
+      res.redirect('/department'); // Redirect to the student list page
     });
 });
 
@@ -966,10 +1388,7 @@ app.get("/birthday" , async(req, res) => {
     .skip((page - 1) * limit)
     .exec();
 
-    const count = await Student.find({
-        status: 'កំពុងសិក្សា'
-      
-    }).countDocuments();
+    const count = await Student.find(query).countDocuments();
     const pageTitle = "បញ្ជីខួបកំណើតរបស់សិក្ខាកាម";
     const userRole = req.session.user.role;
     res.render('birthday', {
@@ -1256,13 +1675,21 @@ app.get("/birthday" , async(req, res) => {
         query.dateregister = {$gte: exportbyStartDate, $lt: exportbyEndDate};
       } 
       
+      
       if(req.body.byCourse === 'វគ្គសិក្សា' ) {
         query.course = { $exists: true };
       } else {
         const exportbyCourse = req.body.byCourse;
         query.course = exportbyCourse;
         if((exportbyReportType === 'របាយការណ៍' )){
-          query.dateregister = { $exists: true };
+          exportbyStartDate = req.body.byStartDate;
+          exportbyEndDate = req.body.byEndDate;
+          if(exportbyStartDate === '' || exportbyEndDate === ''){
+            query.dateregister = { $exists: true };
+          } else {
+            query.dateregister = {$gte: exportbyStartDate, $lt: exportbyEndDate};
+          }
+          
         }
       }
 
@@ -1272,7 +1699,14 @@ app.get("/birthday" , async(req, res) => {
         const exportbyStatus = req.body.byStatus;
         query.status = exportbyStatus;
         if((exportbyReportType === 'របាយការណ៍' )){
-          query.dateregister = { $exists: true };
+          exportbyStartDate = req.body.byStartDate;
+          exportbyEndDate = req.body.byEndDate;
+          
+          if(exportbyStartDate === '' || exportbyEndDate === ''){
+            query.dateregister = { $exists: true };
+          } else {
+            query.dateregister = {$gte: exportbyStartDate, $lt: exportbyEndDate};
+          }
         }
       }
 
@@ -1371,7 +1805,14 @@ app.get("/birthday" , async(req, res) => {
         query.course = exportbyCourse;
         setTitle = "តារាងបញ្ជីរាយនាមសិស្សចុះឈ្មោះចូលរៀនតាមវគ្គ " + exportbyCourse;
         if((exportbyReportType === 'របាយការណ៍' )){
-          query.dateregister = { $exists: true };
+          exportbyStartDate = req.body.byStartDate;
+          exportbyEndDate = req.body.byEndDate;
+          
+          if(exportbyStartDate === '' || exportbyEndDate === ''){
+            query.dateregister = { $exists: true };
+          } else {
+            query.dateregister = {$gte: exportbyStartDate, $lt: exportbyEndDate};
+          }
         }
       }
 
@@ -1382,7 +1823,14 @@ app.get("/birthday" , async(req, res) => {
         query.status = exportbyStatus;
         setTitle = "តារាងបញ្ជីរាយនាមសិស្ស" + exportbyStatus;
         if((exportbyReportType === 'របាយការណ៍' )){
-          query.dateregister = { $exists: true };
+          exportbyStartDate = req.body.byStartDate;
+          exportbyEndDate = req.body.byEndDate;
+          
+          if(exportbyStartDate === '' || exportbyEndDate === ''){
+            query.dateregister = { $exists: true };
+          } else {
+            query.dateregister = {$gte: exportbyStartDate, $lt: exportbyEndDate};
+          }
         }
       }
 
@@ -1586,8 +2034,13 @@ app.post('/upload', upload.single('excelFile'), (req, res) => {
 app.post('/tableData', async (req, res) => {
   try {
 
-    const inputData = req.body; // Input data from the request body
-
+  const inputData = req.body; // Input data from the request body
+  const newID = req.body.studentID;
+  // Check if the new username is already taken
+  const existingID = await Student.findOne({ studentID: newID });
+  if (existingID) {
+    return res.status(400).json({ error: 'សិក្ខាកាមមានអត្តលេខ ' + newID + ' ជាន់គ្នាជាមួយទិន្នន័យនៅក្នុងប្រព័ន្ធ សូមពិនិត្យអត្តលេខឡើងវិញ' });
+  }
   const dataObject = {}; // Object to store all input data
 
   for (const key in inputData) {
@@ -1632,9 +2085,6 @@ res.redirect('studentList');
     res.status(500).send('Error inserting table data');
   }
 });
-
-
-
 
 
 // Connect to MongoDB and insert the data

@@ -5,9 +5,15 @@
     
     <div class="col mt-3">
       <%- include('partials/settings') %>
-      <% if(message.length > 0) { %>
-        <div class="alert alert-success"> <%= message %> </div>
+      <% if(messageSuccess.length > 0) { %>
+        <div class="alert alert-success"> <%= messageSuccess %> </div>
    <% } %>
+   <% if(messageFail.length > 0) { %>
+    <div class="alert alert-danger"> <%= messageFail %> </div>
+<% } %>
+<% if(messageDelete.length > 0) { %>
+  <div class="alert alert-danger"> <%= messageDelete %> </div>
+<% } %>
             <div class="d-flex mb-3">
             <div class="d-flex me-auto">
               <% if(userRole === 'viewer') { %>
@@ -117,7 +123,7 @@
      </div>
        
         
-    <table class="table" id="myTable">
+    <table class="table studentList" id="myTable">
         <thead>
           <tr>
             <th scope="col">អត្តលេខ</th>
@@ -128,6 +134,7 @@
             <th scope="col">លេខទូរសព័្ទ</th>
             <th scope="col">វគ្គសិក្សា</th>
             <th scope="col">ថ្ងៃចុះឈ្មោះ</th>
+            <th scope="col">ស្ថានភាព</th>
             <th scope="col">ការកំណត់</th>
           </tr>
         </thead>
@@ -143,6 +150,27 @@
               <td><%= student.phone %></td>
               <td> <%= student.course %></td>
               <td> <%= moment(student.dateregister).format('DD-MM-YYYY') %></td>
+              
+              <td> 
+                <% if(student.status === 'កំពុងសិក្សា') { %>
+                <div class="active-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                <circle cx="8" cy="8" r="8"/>
+              </svg>&nbsp;<%= student.status %></div>
+              <% } else if(student.status === 'បញ្ចប់ការសិក្សា') { %>
+                <div class="exam-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                  <circle cx="8" cy="8" r="8"/>
+                </svg>&nbsp;បញ្ចប់</div>
+                <% } else if(student.status === 'បោះបង់ការសិក្សា') { %>
+                  <div class="dropout-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="8"/>
+                  </svg>&nbsp;បោះបង់</div>
+                <% } else { %>
+                  <div class="other-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="8"/>
+                  </svg>&nbsp;<%= student.status %></div>
+                <% } %>
+            </td>
+              
               <td>
                 <div class="d-flex">
                   <form action="">
@@ -216,8 +244,10 @@
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-4" id="exampleModalLabel">បញ្ចូលទិន្នន័យ</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+           
               <div class="row g-3">
                
                 <div class="col-sm-7">
@@ -229,6 +259,7 @@
                 </div>
       
                 <div class="col-sm-5">
+                  
                   <label for="studentID" class="form-label">អត្តលេខ</label>
                   <input type="text" class="form-control" name="studentID" placeholder="" value="" required="">
                   <div class="invalid-feedback">
@@ -273,9 +304,9 @@
                 <div class="col-md-5">
                   <label for="skill" class="form-label">ជំនាញ</label>
                   <select class="form-select" name="skill" required="">
-                    <% for (let i = 0; i < skillList.length; i++) { %>
-                      <option value="<%= skillList[i] %>"><%= skillList[i] %></option>
-                    <% } %>
+                     <% departmentlist.forEach(function(departments) { %>
+                      <option value="<%= departments.name %>"><%= departments.name %></option>
+                    <% }); %>
                   </select>
                   <div class="invalid-feedback">
                     សូមជ្រើសរើសជំនាញ
@@ -285,9 +316,9 @@
                 <div class="col-md-4">
                   <label for="course" class="form-label">វគ្គសិក្សា</label>
                   <select class="form-select" name="course" required="">
-                    <% for (let i = 0; i < courseLists.length; i++) { %>
-                      <option value="<%= courseLists[i] %>"><%= courseLists[i] %></option>
-                    <% } %>
+                    <% courseLists.forEach(function(course) { %>
+                      <option value="<%= course.coursename %>"><%= course.coursename %></option>
+                    <% }); %>
                   </select>
                   <div class="invalid-feedback">
                     សូមជ្រើសរើសវគ្គសិក្សា
@@ -313,9 +344,11 @@
                 <div class="col-md-4">
                   <label for="payment" class="form-label">ការទូទាត់</label>
                   <select class="form-select" name="payment" required="">
+                   
                     <% for (let i = 0; i < paymentList.length; i++) { %>
                       <option value="<%= paymentList[i] %>"><%= paymentList[i] %></option>
                     <% } %>
+                   
                   </select>
                   <div class="invalid-feedback">
                     សូមជ្រើសរើសការទូរទាត់
@@ -349,7 +382,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ចាកចេញ</button>
+              
               <button type="submit" class="btn btn-primary">រក្សាទុក</button>
             </div>
           </div>
@@ -367,7 +400,11 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-4" id="exampleModalLabel">ព័ត៌មានរបស់សិក្ខាកាម</h1>
+        <h1 class="modal-title fs-4" id="exampleModalLabel">ព័ត៌មានរបស់សិក្ខាកាម</h1><br>
+        
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
         <% var id = '';
         if(student.studentID){
           id = 'អត្តលេខ: ' + student.studentID;
@@ -375,56 +412,72 @@
           id = 'អត្តលេខ: គ្មាន';
         }
          %>
-        <h1 class="modal-title fs-4"><%= id %></h1>
-      </div>
-      <div class="modal-body">
+        <h2 class="modal-title fs-4"><%= id %></h2><br>
         <div class="d-flex gap-2">
-          <table class="table" style="border: white;">
+          <table class="table studentDetail">
             <tbody>
               
               <tr>
-                <th scope="row" class="textgray">ឈ្មោះ</th>
+                <th scope="row" >ឈ្មោះ</th>
                 <td><%= student.khmername %></td>
               </tr>
               <tr>
-                <th scope="row" class="textgray">ជាអក្សរឡាតាំង</th>
+                <th scope="row" >ជាអក្សរឡាតាំង</th>
                 <td><%= student.englishname %></td>
               </tr>
               <tr>
-                <th scope="row" class="textgray">ភេទ</th>
+                <th scope="row" >ភេទ</th>
                 <td><%= student.gender %></td>
               </tr>
               <tr>
-                <th scope="row" class="textgray">ថ្ងៃខែឆ្នាំកំណើត</th>
+                <th scope="row" >ថ្ងៃខែឆ្នាំកំណើត</th>
                 <td><%= moment(student.dateofbirth).format('DD-MMM-YYYY') %></td>
               </tr>
               <tr>
-                <th scope="row" class="textgray">លេខទូរសព័្ទ</th>
+                <th scope="row" >លេខទូរសព័្ទ</th>
                 <td><%= student.phone %></td>
               </tr>
             </tbody>
           </table>
-          <table class="table" style="border: white;">
+          <table class="table studentDetail">
             <tbody>
               <tr>
-                <th class="textgray">ជំនាញ</th>
+                <th>ជំនាញ</th>
                 <td><%= student.skill %></td>
               </tr>
               <tr>
-                <th class="textgray">វគ្គសិក្សា</th>
+                <th>វគ្គសិក្សា</th>
                 <td><%= student.course %></td>
               </tr>
               <tr>
-                <th class="textgray">ថ្ងៃចុះឈ្មោះ</th>
+                <th>ថ្ងៃចុះឈ្មោះ</th>
                 <td><%= moment(student.dateregister).format('DD-MMM-YYYY') %></td>
               </tr>
               <tr>
-                <th class="textgray">មុខរបរ</th>
+                <th>មុខរបរ</th>
                 <td><%= student.occupation %></td>
               </tr>
               <tr>
-                <th class="textgray">ស្ថានភាព</th>
-                <td><%= student.status %></td>
+                <th>ស្ថានភាព</th>
+                <td>
+                  <% if(student.status === 'កំពុងសិក្សា') { %>
+                    <div class="active-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="8"/>
+                  </svg>&nbsp;<%= student.status %></div>
+                  <% } else if(student.status === 'បញ្ចប់ការសិក្សា') { %>
+                    <div class="exam-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                      <circle cx="8" cy="8" r="8"/>
+                    </svg>&nbsp;បញ្ចប់</div>
+                    <% } else if(student.status === 'បោះបង់ការសិក្សា') { %>
+                      <div class="dropout-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8"/>
+                      </svg>&nbsp;បោះបង់</div>
+                    <% } else { %>
+                      <div class="other-student"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="8"/>
+                      </svg>&nbsp;<%= student.status %></div>
+                    <% } %>
+              </td>
               </tr>
             </tbody>
           </table>
@@ -433,12 +486,11 @@
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ចាកចេញ</button>
         <% if(userRole === 'viewer') { %>
-        <button style="display: none;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
-        <% } else { %>
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
-        <% } %>
+          <button style="display: none;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
+          <% } else { %>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= index %>" type="button">កែទិន្នន័យ</button>
+          <% } %>
       </div>
     </div>
   </div>
@@ -453,6 +505,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-4" id="exampleModalLabel">កែសម្រួលទិន្នន័យ</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           <input style="display: none;" type="text" name="objectID" value="<%= student._id %>">
         </div>
         <div class="modal-body">
@@ -513,8 +566,13 @@
             <div class="col-md-5">
               <label for="skill" class="form-label">ជំនាញ</label>
               <select class="form-select" name="skill" required="">
-                <option value="រដ្ឋបាលកុំព្យូទ័រ" <% if (student.skill === 'រដ្ឋបាលកុំព្យូទ័រ') { %>selected<% } %>>រដ្ឋបាលកុំព្យូទ័រ</option>
-                <option value="ក្រាហ្វិកឌីសាញ" <% if (student.skill === 'ក្រាហ្វិកឌីសាញ') { %>selected<% } %>>ក្រាហ្វិកឌីសាញ</option>
+                <% departmentlist.forEach(function(departments) {
+                  if(student.skill === departments.name){ %>
+                    <option value="<%= departments.name %>" selected><%= departments.name %></option>
+                 <% } else { %>
+                    <option value="<%= departments.name %>"><%= departments.name %></option>
+                  <% } %>
+                <% }); %>
               </select>
               <div class="invalid-feedback">
                 សូមជ្រើសរើសជំនាញ
@@ -524,8 +582,13 @@
             <div class="col-md-4">
               <label for="course" class="form-label">វគ្គសិក្សា</label>
               <select class="form-select" name="course" required="">
-                <option value="CAMT" <% if (student.course === 'CAMT') { %>selected<% } %>>CAMT</option>
-                <option value="OAP" <% if (student.course === 'OAP') { %>selected<% } %>>OAP</option>
+                <% courseLists.forEach(function(course) {
+                      if(student.course === course.coursename){ %>
+                        <option value="<%= course.coursename %>" selected><%= course.coursename %></option>
+                     <% } else { %>
+                        <option value="<%= course.coursename %>"><%= course.coursename %></option>
+                      <% } %>
+                    <% }); %>
               </select>
               <div class="invalid-feedback">
                 សូមជ្រើសរើសវគ្គសិក្សា
@@ -541,23 +604,28 @@
             </div>
   
             <div class="col-md-5">
-              <label for="price" class="form-label">តម្លៃសិក្សា</label>
-              <input type="text" class="form-control" name="price" value="<%= student.price %>" placeholder="" required="">
-              <div class="invalid-feedback">
-                សូមបំពេញតម្លៃសិក្សា
-              </div>
-            </div>
+                  <label for="price" class="form-label">តម្លៃសិក្សា</label>
+                  <input type="text" class="form-control" name="price" value="<%= student.price %>" placeholder="" required="">
+                  <div class="invalid-feedback">
+                    សូមបំពេញតម្លៃសិក្សា
+                  </div>
+                </div>
+                
+                <div class="col-md-4">
+                  <label for="payment" class="form-label">ការទូទាត់</label>
+                  <select class="form-select" name="payment" required="">
+                   
+                    <% for (let i = 0; i < paymentList.length; i++) { %>
+                      <option value="<%= paymentList[i] %>" <% if (student.payment === paymentList[i]) { %>selected<% } %>><%= paymentList[i] %></option>
+                    <% } %>
+                   
+                  </select>
+                  <div class="invalid-feedback">
+                    សូមជ្រើសរើសការទូរទាត់
+                  </div>
+                </div>
             
-            <div class="col-md-4">
-              <label for="payment" class="form-label">ការទូទាត់</label>
-              <select class="form-select" name="payment" required="">
-                <option value="Cash" <% if (student.payment === 'Cash') { %>selected<% } %>>Cash</option>
-                <option value="ABA" <% if (student.payment === 'ABA') { %>selected<% } %>>ABA</option>
-              </select>
-              <div class="invalid-feedback">
-                សូមជ្រើសរើសការទូរទាត់
-              </div>
-            </div>
+            
   
             <div class="col-md-3">
               <label for="occupation" class="form-label">មុខរបរ</label>
@@ -590,7 +658,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ចាកចេញ</button>
+          
           <button type="submit" class="btn btn-primary">រក្សាទុក</button>
         </div>
       </div>
@@ -604,15 +672,15 @@
     <div class="modal fade" id="confirmDeleteModal<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content rounded-3 shadow">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
           <div class="modal-body p-4 text-center">
             <h4 class="mb-2">តើអ្នកពិតជាចង់លុបទិន្នន័យនេះមែនទេ?</h4>
             <p class="mb-0">ទិន្នន័យដែលបានលុបរួចមិនអាចត្រឡប់វិញបានទេ។</p>
           </div>
-          <div class="modal-footer flex-nowrap p-0">
-          
-              <button class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" type="submit"><h5 style="color: red;">លុប</h5></button>
-           
-            <button type="button" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0" data-bs-dismiss="modal"><h5>ចាកចេញ</h5></button>
+          <div class="modal-footer text-center">
+              <button style="width: 100%;" class="btn btn-danger btn-lg " type="submit">លុប</button>
           </div>
         </div>
       </div>

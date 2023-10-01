@@ -1,3 +1,7 @@
+* {
+  margin: 0;
+  padding: 0;
+}
 
 body {
   background-color: #E8ECEF;
@@ -113,6 +117,12 @@ a:hover, a:focus{
   padding: 16px;
   border-radius: 10px;
 }
+
+.dashboard {
+  display: flex;
+}
+
+
 
 
 #hideMe {
@@ -268,3 +278,34 @@ input[type=file]::file-selector-button:hover {
   color: #282A3A
 }
 
+.page-title {
+  font-size: 32px;
+}
+
+.respon-page-title {
+  display: none;
+}
+
+
+@media only screen and (max-width: 650px) {
+  .dashboard {
+    flex-direction: column;
+  }
+  .page-title {
+    margin-left: 10px;
+    font-size: 32px;
+    display: none;
+  }
+  .respon-page-title {
+    display: block;
+    font-size: 24px;
+    margin-top: 18px;
+  }
+  .studentList {
+    font-size: 12px;
+  }
+  .searchdata {
+    display: block;
+
+  }
+}

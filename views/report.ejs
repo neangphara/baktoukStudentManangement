@@ -94,8 +94,8 @@
             <th scope="col">ជំនាញ</th>
             <th scope="col">វគ្គសិក្សា</th>
             <th scope="col">ថ្ងៃចុះឈ្មោះ</th>
-            <th scope="col">តម្លៃ</th>
-            <th scope="col">ការទូទាត់</th>
+            <!-- <th scope="col">តម្លៃ</th>
+            <th scope="col">ការទូទាត់</th> -->
             <th scope="col">មុខរបរ</th>
             <th scope="col">ស្ថានភាព</th>
           </tr>
@@ -114,8 +114,7 @@
                   <td> <%= student.skill %></td>
                   <td> <%= student.course %></td>
                   <td> <%= moment(student.dateregister).format('DD-MM-YYYY') %></td>
-                  <td> <%= formattedPrice %></td>
-                  <td> <%= student.payment %></td>
+                  
                   <td> <%= student.occupation %></td>
                   <td> <%= student.status %></td>
                 </tr>
