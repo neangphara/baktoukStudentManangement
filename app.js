@@ -61,6 +61,7 @@ mongoose.set("useCreateIndex", true);
 const userSchema = new mongoose.Schema ({
   username: String,
   password: String,
+  branch: String,
   role: {
     type: String,
     enum: ['admin', 'editor', 'viewer']
@@ -81,7 +82,8 @@ const studentSchema = new mongoose.Schema ({
   price: Number,
   payment: String,
   occupation: String,
-  status: String
+  status: String,
+  branch: String
 });
 
 const departmentSchema = new mongoose.Schema ({
@@ -161,13 +163,14 @@ app.get("/profile", async(req, res) => {
     const user = await User.findById(userId);
     const currentUser = user.username;
     const currentUserRole = user.role;
-  
+    const currentBranch = user.branch;
 
     res.render("profile",{
       title: pageTitle,
       currentUser: currentUser,
       currentUserRole: currentUserRole,
-      userRole: userRole
+      userRole: userRole,
+      userBranch: currentBranch
     });
   }
   
@@ -274,6 +277,7 @@ app.get("/searchStudent", async(req, res) => {
   } else {
     try {
       const userRole = req.session.user.role;
+      
       var search = '';
       if(req.query.search){
         search = req.query.search;
@@ -379,8 +383,6 @@ app.get("/studentList", async(req, res) => {
       const count = await Student.find().countDocuments();
       const findCourse = await Course.find();
       const department = await DepartmentList.find();
-      
-      
       const pageTitle = "បញ្ជីសិក្ខាកាម";
       const userRole = req.session.user.role;
       res.render('studentList', {
@@ -720,6 +722,7 @@ app.get("/userList", async(req, res) => {
 } else {
     const pageTitle = "បញ្ជីអ្នកប្រើប្រាស់";
     const userRole = req.session.user.role;
+    const userBranch = req.session.user.branch;
     const title = pageTitle;
     const { userId } = req.session.user;
     
@@ -728,7 +731,7 @@ app.get("/userList", async(req, res) => {
       const users = await User.find();
       const currentUser = await User.findById(userId);
   
-      res.render('userList', { users, title, currentUser, userRole, messageSuccess: req.flash('message-success'),
+      res.render('userList', { users, title, currentUser, userRole, userBranch, messageSuccess: req.flash('message-success'),
       messageFail: req.flash('message-fail'),
       messageDelete: req.flash('message-delete') });
     } catch (error) {
@@ -739,6 +742,8 @@ app.get("/userList", async(req, res) => {
   
 });
 
+
+
 app.post("/updateUsers", async(req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
@@ -747,26 +752,47 @@ app.post("/updateUsers", async(req, res) => {
     const userId = req.body.objectID;
     const newUsername = req.body.username;
     const updatedData = {
-      username: req.body.username,
-      role: req.body.role
-      
+      username: req.body.username
     };
 
     // Check if the new username is already taken
     const existingUser = await User.findOne({ username: newUsername });
     if (existingUser) {
       return res.status(400).json({ error: 'Username already taken' });
-    }
-  // Use Mongoose to update the student in the database
-  User.findByIdAndUpdate(userId, updatedData)
-    .then(() => {
-      console.log('User updated successfully');
-      res.redirect('/userList'); // Redirect to the student list page
-    })
-    .catch((error) => {
-      console.error('Error updating User:', error);
-      res.redirect('/userList'); // Redirect to the student list page
-    });
+    } 
+    User.findByIdAndUpdate(userId, updatedData)
+        .then(() => {
+          console.log('User updated successfully');
+          res.redirect('/userList'); // Redirect to the student list page
+        })
+        .catch((error) => {
+          console.error('Error updating User:', error);
+          res.redirect('/userList'); // Redirect to the student list page
+        });
+  }
+});
+
+app.post("/updateUsersSetting", async(req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    res.redirect("/login");
+  } else {
+    const userId = req.body.objectID;
+
+    const updatedData = {
+      role: req.body.role,
+      branch: req.body.branch
+    };
+
+    User.findByIdAndUpdate(userId, updatedData)
+        .then(() => {
+          console.log('User updated successfully');
+          res.redirect('/userList'); // Redirect to the student list page
+        })
+        .catch((error) => {
+          console.error('Error updating User:', error);
+          res.redirect('/userList'); // Redirect to the student list page
+        });
   }
 });
 
@@ -817,7 +843,7 @@ app.get('/logout', (req, res) => {
 app.post('/register', async (req, res) => {
   
 
-  const { username, password, role } = req.body;
+  const { username, password, role, branch } = req.body;
 
   try {
     // Check if the username is already taken
@@ -830,7 +856,7 @@ app.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
-    const newUser = new User({ username, password: hashedPassword, role });
+    const newUser = new User({ username, password: hashedPassword, role, branch });
     await newUser.save();
 
     res.redirect("/userList");
@@ -873,43 +899,93 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post("/addStudent", function(req, res){
-  const student = new Student({
-    studentID: req.body.studentID,
-    khmername: req.body.khmername,
-    englishname: req.body.englishname,
-    phone: req.body.phone,
-    gender: req.body.gender,
-    dateofbirth: req.body.dateofbirth,
-    skill: req.body.skill,
-    course: req.body.course,
-    dateregister: req.body.dateregister,
-    price: req.body.price,
-    payment: req.body.payment,
-    occupation: req.body.occupation,
-    status: req.body.status
-  });
-  const studentID = req.body.studentID;
-  // Check if the new studentID is already taken
-  const existingID = Student.findOne({ studentID: studentID });
-  if (existingID) {
-    return res.status(400).json({ error: 'អត្តលេខ ' + studentID + ' មានរួចហើយមិនអាចបញ្ចូលបានទេ' });
-  }
-
-  student.save((err) => {
-    if(err) {
+app.post("/addStudent", async (req, res) =>{
+  const newStudentID = req.body.studentID;
+  const { userId } = req.session.user;
+  const user = await User.findById(userId);
+  const baktoukBranch = user.branch;
+ 
+  // Check if the new studentID already exists in the database
+  Student.findOne({ studentID: newStudentID }, function(err, existingStudent) {
+    if (err) {
       console.log(err);
-        
-        req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
-        res.redirect("/studentList");
-                
+      req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+      res.redirect("/studentList");
+    } else if (existingStudent) {
+      return res.status(401).json({ error: 'អត្តលេខ ' + newStudentID + ' មានរួចហើយ' });
+      // req.flash('message-fail', 'អត្តលេខសិស្សនេះបានប្រើរួចហើយ');
+      // res.redirect("/studentList");
     } else {
-        req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
-        res.redirect("/studentList");
-               
+      // Create a new student object
+      const student = new Student({
+        studentID: newStudentID,
+        khmername: req.body.khmername,
+        englishname: req.body.englishname,
+        phone: req.body.phone,
+        gender: req.body.gender,
+        dateofbirth: req.body.dateofbirth,
+        skill: req.body.skill,
+        course: req.body.course,
+        dateregister: req.body.dateregister,
+        price: req.body.price,
+        payment: req.body.payment,
+        occupation: req.body.occupation,
+        status: req.body.status,
+        branch: baktoukBranch
+      });
+
+      // Save the new student
+      student.save(function(err) {
+        if (err) {
+          console.log(err);
+          req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+          res.redirect("/studentList");
+        } else {
+          req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+          res.redirect("/studentList");
+        }
+      });
     }
   });
 });
+
+// app.post("/addStudent", function(req, res){
+ 
+
+//     const student = new Student({
+//       studentID: req.body.studentID,
+//       khmername: req.body.khmername,
+//       englishname: req.body.englishname,
+//       phone: req.body.phone,
+//       gender: req.body.gender,
+//       dateofbirth: req.body.dateofbirth,
+//       skill: req.body.skill,
+//       course: req.body.course,
+//       dateregister: req.body.dateregister,
+//       price: req.body.price,
+//       payment: req.body.payment,
+//       occupation: req.body.occupation,
+//       status: req.body.status,
+//       branch: req.session.user.branch
+//     });
+  
+//     student.save((err) => {
+//       if(err) {
+//         console.log(err);
+          
+//           req.flash('message-fail', 'រក្សាទុកមិនបានជោគជ័យ');
+//           res.redirect("/studentList");
+                  
+//       } else {
+//           req.flash('message-success', 'រក្សាទុកបានជោគជ័យ');
+//           res.redirect("/studentList");
+                 
+//       }
+//     });
+ 
+
+  
+// });
 
 app.post("/addCurrentStudent", function(req, res){
   const student = new Student({
@@ -1930,6 +2006,7 @@ app.get("/birthday" , async(req, res) => {
                     <th scope="col">ការទូទាត់</th>
                     <th scope="col">មុខរបរ</th>
                     <th scope="col">ស្ថានភាព</th>
+                    <th scope="col">ទីតាំង</th>
                 </tr>
             </thead>
             <tbody>
@@ -1955,6 +2032,7 @@ app.get("/birthday" , async(req, res) => {
                       <td style="text-align: left;"> <%= student.payment %></td>
                       <td style="text-align: left;"> <%= student.occupation %></td>
                       <td style="text-align: left;"> <%= student.status %></td>
+                      <td style="text-align: left;"> <%= student.branch %></td>
                     </tr>
                 <% }) %>
             </tbody>

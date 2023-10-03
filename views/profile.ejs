@@ -7,6 +7,8 @@
     <form action="/updateUsername" method="POST" class="needs-validation" novalidate="">
        <label for="" class="form-label">ឈ្មោះអ្នកប្រើប្រាស់</label> 
        <input type="text" name="username" class="form-control" value="<%= currentUser %>" required>
+       <label for="" class="form-label">ទីតាំង</label> 
+       <input type="text" class="form-control" value="<%= userBranch  %>" disabled>
        <label for="" class="form-label">តួនាទី</label> 
        <input type="text" class="form-control" value="<%= currentUserRole  %>" disabled>
       

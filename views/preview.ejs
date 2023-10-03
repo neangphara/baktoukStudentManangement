@@ -27,6 +27,7 @@
                 <th><%= headers[10] %></th> 
                 <th><%= headers[11] %></th>
                 <th><%= headers[12] %></th>
+                <th><%= headers[13] %></th>
               </tr>
             </thead>
             <tbody>
@@ -39,16 +40,18 @@
                   <td><% var dob = new Date((row[4] - 25569) * 86400 * 1000); 
                     var dateofbirth = dob.toLocaleDateString();
                     %> <input class="date-input" type="text" name="dateofbirth" value="<%= dateofbirth %>"></td> 
-                <td><input type="text" name="skill" value="<%= row[5] %>"></td>
-                <td><input type="text" name="course" value="<%= row[6] %>"></td>
-                <td><% var dresgister = new Date((row[7] - 25569) * 86400 * 1000); 
+                <td><input type="text" name="phone" value="<%= row[5] %>"></td>
+                <td><input type="text" name="skill" value="<%= row[6] %>"></td>
+                <td><input type="text" name="course" value="<%= row[7] %>"></td>
+                <td><% var dresgister = new Date((row[8] - 25569) * 86400 * 1000); 
                     var dateregister = dresgister.toLocaleDateString();
                     %> <input class="date-input" type="text" name="dateregister" value="<%= dateregister %>"></td> 
-                <td><input type="text" name="price" value="<%= row[8] %>"></td>
-                <td><input type="text" name="payment" value="<%= row[9] %>"></td>
-                <td><input type="text" name="occupation" value="<%= row[10] %>"></td>
-                <td><input type="text" name="status" value="<%= row[11] %>"></td>
-                <td><input type="text" name="phone" value="<%= row[12] %>"></td>
+                <td><input type="text" name="price" value="<%= row[9] %>"></td>
+                <td><input type="text" name="payment" value="<%= row[10] %>"></td>
+                <td><input type="text" name="occupation" value="<%= row[11] %>"></td>
+                <td><input type="text" name="status" value="<%= row[12] %>"></td>
+                <td><input type="text" name="branch" value="<%= row[13] %>"></td>
+                
                 </tr>
               <% } %>
             </tbody>

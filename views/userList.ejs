@@ -19,6 +19,7 @@
             
             <th scope="col">ឈ្មោះអ្នកប្រើប្រាស់</th>
             <th scope="col">តួនាទី</th>
+            <th scope="col">ទីតាំង</th>
             <th scope="col">ការកំណត់</th>
           </tr>
         </thead>
@@ -28,7 +29,7 @@
             <tr>
               <td> <%= user.username %> </td>
               <td> <%= user.role %> </td>
-            
+              <td> <%= user.branch %></td>
               <td>
                 <div class="d-flex">
                   <% if (user.username === currentUser.username) { %>
@@ -44,6 +45,21 @@
                       </svg></button>
                     </form>&nbsp;
                     <% } %>
+                    <% if (user.username === currentUser.username) { %>
+                      <form>
+                        <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#updateSetting<%= index %>" type="button" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                          <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                          <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                        </svg></button>
+                      </form>&nbsp;
+                      <% } else { %>
+                        <form>
+                          <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#updateSetting<%= index %>" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                          </svg></button>
+                        </form>&nbsp;
+                        <% } %>
                   <% if (user.username === currentUser.username) { %>
                   <form action="">
                     <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal<%= index %>" type="button" disabled style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -109,6 +125,18 @@
                     សូមបំពេញលេខសម្ងាត់
                   </div>
                 </div>
+
+                <div class="col-sm-5">
+                  <label for="role" class="form-label">ទីតាំង</label>
+                  <select class="form-select" name="branch" id="">
+                    <option value="សាខាទី១">សាខាទី១</option>
+                    <option value="សាខាទី២">សាខាទី២</option>
+                    <option value="សាខាទី៣">សាខាទី៣</option>
+                  </select>
+                  <div class="invalid-feedback">
+                 
+                  </div>
+                </div>
                 
       
                 
@@ -129,19 +157,13 @@
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-4" id="exampleModalLabel">កែសម្រួលទិន្នន័យ</h1>
+              <h1 class="modal-title fs-4" id="exampleModalLabel">កែឈ្មោះ</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <div class="row g-3">
                 <input style="display: none;" class="form-control" type="text" name="objectID" value="<%= user._id %>">
                <input class="form-control" name="username" type="text" value="<%= user.username %>">
-               <select class="form-select" name="role" id="">
-                <option value="admin" <% if (user.role === 'admin') { %>selected<% } %>>Admin</option>
-                <option value="editor" <% if (user.role === 'editor') { %>selected<% } %>>Editor</option>
-                <option value="viewer" <% if (user.role === 'viewer') { %>selected<% } %>>Viewer</option>
-               </select>
-
               </div>
             </div>
             <div class="modal-footer">
@@ -153,6 +175,43 @@
       </div>
     </form>
     <% })  %>
+
+    <% users.forEach(function(user, index) { %>
+      <form action="/updateUsersSetting" method="POST" class="needs-validation" novalidate="">
+        <div class="modal fade" id="updateSetting<%= index %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-4" id="exampleModalLabel">កំណត់សិទ្ធនិងទីតាំង</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row g-3">
+                  <input style="display: none;" class="form-control" type="text" name="objectID" value="<%= user._id %>">
+                
+                 <select class="form-select" name="role" id="">
+                  <option value="admin" <% if (user.role === 'admin') { %>selected<% } %>>Admin</option>
+                  <option value="editor" <% if (user.role === 'editor') { %>selected<% } %>>Editor</option>
+                  <option value="viewer" <% if (user.role === 'viewer') { %>selected<% } %>>Viewer</option>
+                 </select>
+                 <select class="form-select" name="branch" id="">
+                  <option value="" <% if (user.branch === '') { %>selected<% } %> >ទីតាំង</option>
+                  <option value="សាខាទី១" <% if (user.branch === 'សាខាទី១') { %>selected<% } %>>សាខាទី១</option>
+                  <option value="សាខាទី២" <% if (user.branch === 'សាខាទី២') { %>selected<% } %>>សាខាទី២</option>
+                  <option value="សាខាទី៣" <% if (user.branch === 'សាខាទី៣') { %>selected<% } %>>សាខាទី៣</option>
+                 </select>
+  
+                </div>
+              </div>
+              <div class="modal-footer">
+                
+                <button type="submit" class="btn btn-primary">រក្សាទុក</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <% })  %>
 
     <% users.forEach(function(user, index) { %>
       <form action="/deleteAccount/<%= user._id %>?_method=DELETE" method="POST">
